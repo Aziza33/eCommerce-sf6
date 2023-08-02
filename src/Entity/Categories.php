@@ -18,15 +18,23 @@ class Categories
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 
+    #[ORM\Column(type: 'integer')]
+    private $categoryOrder;
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'categories')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?self $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $categories;
 
+    #[ORM\OneToMany(mappedBy: 'categories', targetEntity: Products::class)]
+    private Collection $products;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -45,6 +53,20 @@ class Categories
 
         return $this;
     }
+    // création des accesseurs pour CategoryOrder
+    public function getCategoryOrder(): ?int
+    {
+        return $this->categoryOrder;
+    }
+    public function setCategoryOrder(int $categoryOrder): self
+    {
+        $this->categoryOrder = $categoryOrder;
+
+        return $this;
+    }
+
+
+
 
     public function getParent(): ?self
     {
@@ -82,6 +104,36 @@ class Categories
             // set the owning side to null (unless already changed)
             if ($category->getParent() === $this) {
                 $category->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Products>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Products $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setCategories($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Products $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getCategories() === $this) {
+                $product->setCategories(null);
             }
         }
 
