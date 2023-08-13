@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration des produits
+{% endblock %}
+
+{% block body %}
+	<style>
+	    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+	    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+	</style>
+
+	<main class="container">
+		<section class="row">
+			<div class="example-wrapper col-12">
+				<h1>Modifier un produit</h1>
+                {% include "admin/products/_form.html.twig" with {'button_label': 'Modifier'} %} 
+			</div>
+		</section>
+	</main>
+
+	{# <div class="example-wrapper">
+	 
+	</div> #}
+{% endblock %}
